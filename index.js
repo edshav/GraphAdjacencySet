@@ -28,13 +28,12 @@ class Graph {
             return true;
         }
     }
-    // undirected graph
+    // directed graph
     addEdge(src, dest) {
         if (this.adjSet.get(src).has(dest)) {
             return false;
         } else {
             this.adjSet.get(src).add(dest);
-            this.adjSet.get(dest).add(src);
             return true;
         }
     }
