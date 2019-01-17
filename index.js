@@ -21,13 +21,18 @@ class Graph {
             return true;
         }
     }
-    
-
+    printGraph() {
+        this.adjSet.forEach((value, key) => {
+            let str = key + ' -> ';
+            value.forEach(value => {
+                str += value + ' ';
+            });
+            console.log(str);
+        });
+    }
 }
 
 const g = new Graph(['Chicago','Boston','New York','Los Angeles','Philadelphia','Detroit']);
-console.log(g);
 g.addEdge('Chicago','Boston');
-console.log(g);
-console.log(g.addEdge('Chicago','Boston'));
-// console.log(g);
+g.addEdge('Chicago','New York');
+g.printGraph();
