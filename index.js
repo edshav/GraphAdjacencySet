@@ -10,7 +10,7 @@ class Queue {
         return this.data.shift();
     }
     isEmpty() {
-        return !Boolean(this.data.length);
+        return !(this.data.length);
     }
 }
 
@@ -43,18 +43,16 @@ class Graph {
             value.forEach(value => {
                 str += value + ' ';
             });
-            console.log(str);
         });
     }
     // Breadth-First Search
-    isConnected(src, dest) {
+    isConnected_BFS(src, dest) {
         const queue = new Queue();
         queue.add(src);
         const marked = new Set();
         marked.add(src);
         while (!queue.isEmpty()) {
             const current = queue.get();
-            console.log(current);
             if (current === dest) return true;
             this.adjSet.get(current).forEach(value => {
                 if (!marked.has(value)) {
@@ -64,6 +62,25 @@ class Graph {
             });
         }
         return false;
+    }
+    // Depth-First Search
+    isConnected_DFS(src, dest) {
+        const marked = new Set();
+        const dfs = (current, dest) => {
+            marked.add(current);
+            console.log(current, dest);
+            if (current === dest) {
+                console.log(current === dest);
+                return true;
+            } else {
+                this.adjSet.get(current).forEach(value => {
+                    if (!marked.has(value)) {
+                        return dfs(value, dest);
+                    }
+                });
+            }
+        };
+        return dfs(src, dest);
     }
 }
 
@@ -81,9 +98,10 @@ g.addEdge('Philadelphia','New York');
 g.addEdge('Boston','New York');
 g.addEdge('New York','San Francisco');
 
-g.printGraph();
+// g.printGraph();
 
-console.log(g.isConnected('Detroit', 'Philadelphia'));
-console.log(g.isConnected('Detroit', 'San Francisco'));
+// console.log(g.isConnected_BFS('Detroit', 'Philadelphia'));
+// console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
 g.addNode('Los Angeles');
-console.log(g.isConnected('Detroit', 'Los Angeles'));
+// console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
+console.log(g.isConnected_DFS('Detroit', 'New York'));
