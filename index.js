@@ -64,21 +64,30 @@ class Graph {
         return false;
     }
     // Depth-First Search
-    isConnected_DFS(src, dest) {
-        const marked = new Set();
+    isConnected_DFS(src, dest) { // src: String, dest: String
+        const marked = new Set(); // visited nodes
+        //recursive function
         const dfs = (current, dest) => {
             marked.add(current);
             console.log(current, dest);
             if (current === dest) {
-                console.log(current === dest);
-                return true;
-            } else {
-                this.adjSet.get(current).forEach(value => {
-                    if (!marked.has(value)) {
-                        return dfs(value, dest);
-                    }
-                });
+                return true; // <--- fcuk, it's don't work!!!
             }
+            const iterator = this.adjSet.get(current).values();
+            let value = iterator.next().value;
+            while (value) {
+                if (!marked.has(value)) {
+                    return dfs(value, dest);
+                }
+                value = iterator.next().value;
+            }
+
+            // this.adjSet.get(current).forEach(value => { // this.adjSet.get(current): Set
+            //     if (!marked.has(value)) {
+            //         return dfs(value, dest);
+            //     }
+            // });
+
         };
         return dfs(src, dest);
     }
@@ -105,3 +114,4 @@ g.addEdge('New York','San Francisco');
 g.addNode('Los Angeles');
 // console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
 console.log(g.isConnected_DFS('Detroit', 'New York'));
+console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
