@@ -71,23 +71,23 @@ class Graph {
             marked.add(current);
             console.log(current, dest);
             if (current === dest) {
-                return true; // <--- fcuk, it's don't work!!!
-            }
-            const iterator = this.adjSet.get(current).values();
-            let value = iterator.next().value;
-            while (value) {
-                if (!marked.has(value)) {
-                    return dfs(value, dest);
+                return true;
+            } else {
+                const iterator1 = this.adjSet.get(current).entries();
+                for (let entry of iterator1) {
+                    if (!marked.has(entry[0])) {
+                        return dfs(entry[0], dest);
+                    }
                 }
-                value = iterator.next().value;
             }
-
-            // this.adjSet.get(current).forEach(value => { // this.adjSet.get(current): Set
+            // const iterator = this.adjSet.get(current).values();
+            // let value = iterator.next().value;
+            // while (value) {
             //     if (!marked.has(value)) {
             //         return dfs(value, dest);
             //     }
-            // });
-
+            //     value = iterator.next().value;
+            // }
         };
         return dfs(src, dest);
     }
@@ -113,5 +113,5 @@ g.addEdge('New York','San Francisco');
 // console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
 g.addNode('Los Angeles');
 // console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
-console.log(g.isConnected_DFS('Detroit', 'New York'));
+// console.log(g.isConnected_DFS('Detroit', 'New York'));
 console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
