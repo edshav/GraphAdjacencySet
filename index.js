@@ -47,6 +47,7 @@ class Graph {
     }
     // Breadth-First Search
     isConnected_BFS(src, dest) {
+        if (!this.adjSet.has(src)) return false;
         const queue = new Queue();
         queue.add(src);
         const marked = new Set();
