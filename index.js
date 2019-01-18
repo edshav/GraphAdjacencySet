@@ -43,6 +43,7 @@ class Graph {
             value.forEach(value => {
                 str += value + ' ';
             });
+            console.log(str);
         });
     }
     // Breadth-First Search
@@ -86,6 +87,14 @@ class Graph {
         };
         return dfs(src, dest);
     }
+    removeEdge(src, dest) {
+        if (!this.adjSet.get(src).has(dest)) {
+            return false;
+        } else {
+            this.adjSet.get(src).delete(dest);
+            return true;
+        }
+    }
 }
 
 const g = new Graph(['Detroit','Chicago','Philadelphia','Boston','New York']);
@@ -102,12 +111,15 @@ g.addEdge('Philadelphia','New York');
 g.addEdge('Boston','New York');
 g.addEdge('New York','San Francisco');
 
-// g.printGraph();
+g.printGraph();
 
 // console.log(g.isConnected_BFS('Detroit', 'Philadelphia'));
 // console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
 g.addNode('Los Angeles');
 // console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
 // console.log(g.isConnected_DFS('Detroit', 'New York'));
-console.log(g.isConnected_DFS('Detroit', 'Boston'));
-console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
+// console.log(g.isConnected_DFS('Detroit', 'Boston'));
+// console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
+g.removeEdge('New York','San Francisco');
+console.log('---------');
+g.printGraph();
