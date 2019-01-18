@@ -65,29 +65,23 @@ class Graph {
     }
     // Depth-First Search
     isConnected_DFS(src, dest) { // src: String, dest: String
+        if (!this.adjSet.has(src)) return false;
         const marked = new Set(); // visited nodes
         //recursive function
         const dfs = (current, dest) => {
-            marked.add(current);
-            console.log(current, dest);
             if (current === dest) {
                 return true;
-            } else {
-                const iterator1 = this.adjSet.get(current).entries();
-                for (let entry of iterator1) {
-                    if (!marked.has(entry[0])) {
-                        return dfs(entry[0], dest);
-                    }
-                }
             }
-            // const iterator = this.adjSet.get(current).values();
-            // let value = iterator.next().value;
-            // while (value) {
-            //     if (!marked.has(value)) {
-            //         return dfs(value, dest);
-            //     }
-            //     value = iterator.next().value;
-            // }
+            marked.add(current);
+            const iterator = this.adjSet.get(current).values();
+            let value = iterator.next().value;
+            while (value) {
+                if (!marked.has(value) && dfs(value, dest)) {
+                    return true;
+                }
+                value = iterator.next().value;
+            }
+            return false;
         };
         return dfs(src, dest);
     }
@@ -114,4 +108,5 @@ g.addEdge('New York','San Francisco');
 g.addNode('Los Angeles');
 // console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
 // console.log(g.isConnected_DFS('Detroit', 'New York'));
+console.log(g.isConnected_DFS('Detroit', 'Boston'));
 console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
