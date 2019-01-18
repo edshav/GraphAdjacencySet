@@ -90,10 +90,19 @@ class Graph {
     removeEdge(src, dest) {
         if (!this.adjSet.get(src).has(dest)) {
             return false;
-        } else {
-            this.adjSet.get(src).delete(dest);
-            return true;
         }
+        this.adjSet.get(src).delete(dest);
+        return true;
+    }
+    removeNode(node) {
+        if (!this.adjSet.has(node)) {
+            return false;
+        }
+        this.adjSet.forEach((value, key) => {
+            this.removeEdge(key, node);
+        });
+        this.adjSet.delete(node);
+        return true;
     }
 }
 
@@ -111,7 +120,7 @@ g.addEdge('Philadelphia','New York');
 g.addEdge('Boston','New York');
 g.addEdge('New York','San Francisco');
 
-g.printGraph();
+// g.printGraph();
 
 // console.log(g.isConnected_BFS('Detroit', 'Philadelphia'));
 // console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
@@ -120,6 +129,11 @@ g.addNode('Los Angeles');
 // console.log(g.isConnected_DFS('Detroit', 'New York'));
 // console.log(g.isConnected_DFS('Detroit', 'Boston'));
 // console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
-g.removeEdge('New York','San Francisco');
-console.log('---------');
+// g.removeEdge('New York','San Francisco');
+// console.log('---------');
+// g.printGraph();
 g.printGraph();
+console.log('-----------------------------');
+g.removeNode('Boston');
+g.printGraph();
+
