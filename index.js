@@ -55,7 +55,9 @@ class Graph {
         marked.add(src);
         while (!queue.isEmpty()) {
             const current = queue.get();
-            if (current === dest) return true;
+            if (current === dest) {
+                return true;
+            }
             this.adjSet.get(current).forEach(value => {
                 if (!marked.has(value)) {
                     queue.add(value);
@@ -104,27 +106,69 @@ class Graph {
         this.adjSet.delete(node);
         return true;
     }
+    minDistance(src, dest) { // https://www.geeksforgeeks.org/finding-the-path-from-one-vertex-to-rest-using-bfs/
+        if (!(this.adjSet.has(src) && this.adjSet.has(dest))) return false;
+        const writeMinDistance = (obj, str) => {
+            let distance = str;
+            let city = str;
+            while (true) {
+                if (city === obj[city]) {
+                    return distance;
+                } else {
+                    distance = obj[city] + ' -> ' + distance;
+                    city = obj[city];
+                }
+            }
+        };
+        const marked = new Set(); // use a Set instead of an Array
+        const queue = new Queue();
+        const parent = {}; // use an Object instead of an Array
+        marked.add(src);
+        queue.add(src);
+        parent[src] = src;
+        while (!queue.isEmpty()) {
+            const current = queue.get();
+            if (current === dest) {
+                return writeMinDistance(parent, dest);
+            }
+            this.adjSet.get(current).forEach(value => {
+                if (!marked.has(value)) {
+                    queue.add(value);
+                    marked.add(value);
+                    parent[value] = current;
+                }
+            });
+        }
+        return false;
+    }
 }
 
-const g = new Graph(['Detroit','Chicago','Philadelphia','Boston','New York']);
-
-g.addNode('San Francisco');
+const g = new Graph(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix',
+    'Houston','Atlanta','Orlando']);
 
 g.addEdge('Detroit','Chicago');
 g.addEdge('Detroit','Philadelphia');
-g.addEdge('Chicago','New York');
 g.addEdge('Chicago','Boston');
-g.addEdge('Philadelphia','Boston');
-g.addEdge('Philadelphia','San Francisco');
+g.addEdge('Chicago','San Diego');
 g.addEdge('Philadelphia','New York');
-g.addEdge('Boston','New York');
+g.addEdge('Philadelphia','San Francisco');
+g.addEdge('Boston','Phoenix');
+g.addEdge('San Diego','Houston');
+g.addEdge('New York','Atlanta');
+g.addEdge('San Francisco','Orlando');
+g.addEdge('Boston','San Diego');
+g.addEdge('San Diego','Boston');
+g.addEdge('San Diego','New York');
+g.addEdge('New York','San Diego');
 g.addEdge('New York','San Francisco');
+g.addEdge('San Francisco','New York');
+g.addEdge('Boston','San Francisco');
+g.addEdge('San Francisco','Boston');
 
 // g.printGraph();
 
 // console.log(g.isConnected_BFS('Detroit', 'Philadelphia'));
 // console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
-g.addNode('Los Angeles');
 // console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
 // console.log(g.isConnected_DFS('Detroit', 'New York'));
 // console.log(g.isConnected_DFS('Detroit', 'Boston'));
@@ -134,7 +178,8 @@ g.addNode('Los Angeles');
 // g.printGraph();
 g.printGraph();
 console.log('-----------------------------');
-g.removeNode('Boston');
-g.printGraph();
+// g.removeNode('Boston');
+// g.printGraph();
+console.log(g.minDistance('Detroit', 'Orlando'));
 
 
