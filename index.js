@@ -120,9 +120,9 @@ class Graph {
                 }
             }
         };
-        const marked = new Set(); // use a Set instead of an Array
+        const marked = new Set(); // Set used instead of Array
         const queue = new Queue();
-        const parent = {}; // use an Object instead of an Array
+        const parent = {}; // Object used instead of an Array
         marked.add(src);
         queue.add(src);
         parent[src] = src;
@@ -141,31 +141,43 @@ class Graph {
         }
         return false;
     }
+
+    /*isHamiltonianPath: Given a Graph, this method indicates whether the List of node values represents a Hamiltonian
+    Path. A Hamiltonian Path is a valid path through the graph in which every node in the graph is visited exactly
+    once, except for the start and end nodes, which are the same, so that it is a cycle. If the values in the input
+    List represent a Hamiltonian Path, the method should return true, but the method should return false otherwise,
+    e.g. if the path is not a cycle, if some nodes are not visited, if some nodes are visited more than once, if some
+    values do not have corresponding nodes in the graph, if the input is not a valid path (i.e., there is a sequence of
+    nodes in the List that are not connected by an edge), etc. The method should also return false if the input Graph
+    or List is null.*/
+
+    isHamiltonianPath(arrOfNodes) {
+        if (arrOfNodes === null || arrOfNodes[0] !== arrOfNodes[arrOfNodes.length - 1]) return false;
+        const setOfNodes = new Set(this.adjSet.keys());
+        console.log(setOfNodes);
+        for (let i = 0; i < arrOfNodes.length - 1; i++) {
+            if (!setOfNodes.has(arrOfNodes[i]) || !this.adjSet.get(arrOfNodes[i]).has(arrOfNodes[i + 1])) return false;
+            setOfNodes.delete(arrOfNodes[i]); // remove visited node;
+        }
+        return setOfNodes.size === 0;
+    }
 }
 
 const g = new Graph(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix',
     'Houston','Atlanta','Orlando']);
 
 g.addEdge('Detroit','Chicago');
-g.addEdge('Detroit','Philadelphia');
-g.addEdge('Chicago','Boston');
-g.addEdge('Chicago','San Diego');
-g.addEdge('Philadelphia','New York');
-g.addEdge('Philadelphia','San Francisco');
-g.addEdge('Boston','Phoenix');
-g.addEdge('San Diego','Houston');
-g.addEdge('New York','Atlanta');
-g.addEdge('San Francisco','Orlando');
+g.addEdge('Chicago','Philadelphia');
+g.addEdge('Philadelphia','Boston');
 g.addEdge('Boston','San Diego');
-g.addEdge('San Diego','Boston');
 g.addEdge('San Diego','New York');
-g.addEdge('New York','San Diego');
 g.addEdge('New York','San Francisco');
-g.addEdge('San Francisco','New York');
-g.addEdge('Boston','San Francisco');
-g.addEdge('San Francisco','Boston');
+g.addEdge('San Francisco','Phoenix');
+g.addEdge('Phoenix','Houston');
+g.addEdge('Houston','Atlanta');
+g.addEdge('Atlanta','Orlando');
+g.addEdge('Orlando','Detroit');
 
-// g.printGraph();
 
 // console.log(g.isConnected_BFS('Detroit', 'Philadelphia'));
 // console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
@@ -176,10 +188,12 @@ g.addEdge('San Francisco','Boston');
 // g.removeEdge('New York','San Francisco');
 // console.log('---------');
 // g.printGraph();
-g.printGraph();
-console.log('-----------------------------');
+// g.printGraph();
+// console.log('-----------------------------');
 // g.removeNode('Boston');
 // g.printGraph();
-console.log(g.minDistance('Detroit', 'Orlando'));
+// console.log(g.minDistance('Detroit', 'Orlando'));
+console.log(g.isHamiltonianPath(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix',
+    'Houston','Atlanta','Orlando','Detroit']));
 
 
