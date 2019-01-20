@@ -13,10 +13,12 @@ class Queue {
         return !(this.data.length);
     }
 }
-
+// The graph is a JS Map.
+// The key of each key-value pair is a node.
+// The value of each key-value pair is a Set of edges (directly connected nodes).
+// The graph is a directed graph
 class Graph {
     constructor(arr = []) {
-        this.noOfNodes = arr.length;
         this.adjSet = new Map();
         arr.map(x => this.adjSet.set(x, new Set()));
     }
@@ -106,6 +108,7 @@ class Graph {
         this.adjSet.delete(node);
         return true;
     }
+    // The BFS method traverses the minimum distance (if any). But we need to know the path.
     minDistance(src, dest) { // https://www.geeksforgeeks.org/finding-the-path-from-one-vertex-to-rest-using-bfs/
         if (!(this.adjSet.has(src) && this.adjSet.has(dest))) return false;
         const writeMinDistance = (obj, str) => {
@@ -120,9 +123,11 @@ class Graph {
                 }
             }
         };
-        const marked = new Set(); // Set used instead of Array
+        // The Set is used to collect visited nodes.
+        const marked = new Set();
         const queue = new Queue();
-        const parent = {}; // Object used instead of an Array
+        // The object is used to store the paths from the source to each visited node.
+        const parent = {};
         marked.add(src);
         queue.add(src);
         parent[src] = src;
@@ -142,24 +147,22 @@ class Graph {
         return false;
     }
 
-    /*isHamiltonianPath: Given a Graph, this method indicates whether the List of node values represents a Hamiltonian
-    Path. A Hamiltonian Path is a valid path through the graph in which every node in the graph is visited exactly
-    once, except for the start and end nodes, which are the same, so that it is a cycle. If the values in the input
-    List represent a Hamiltonian Path, the method should return true, but the method should return false otherwise,
-    e.g. if the path is not a cycle, if some nodes are not visited, if some nodes are visited more than once, if some
-    values do not have corresponding nodes in the graph, if the input is not a valid path (i.e., there is a sequence of
-    nodes in the List that are not connected by an edge), etc. The method should also return false if the input Graph
-    or List is null.*/
-
-    isHamiltonianPath(arrOfNodes) {
-        if (arrOfNodes === null || arrOfNodes[0] !== arrOfNodes[arrOfNodes.length - 1]) return false;
-        const setOfNodes = new Set(this.adjSet.keys());
-        console.log(setOfNodes);
-        for (let i = 0; i < arrOfNodes.length - 1; i++) {
-            if (!setOfNodes.has(arrOfNodes[i]) || !this.adjSet.get(arrOfNodes[i]).has(arrOfNodes[i + 1])) return false;
-            setOfNodes.delete(arrOfNodes[i]); // remove visited node;
+    // isHamiltonianPath: Given a Graph, this method indicates whether the List of node values represents a Hamiltonian
+    // Path. A Hamiltonian Path is a valid path through the graph in which every node in the graph is visited exactly
+    // once, except for the start and end nodes, which are the same, so that it is a cycle.
+    // The argument is an Array of nodes
+    isHamiltonianPath(path) {
+        if (path === null || path[0] !== path[path.length - 1]) return false;
+        // The Set is used to store unvisited nodes
+        const unvisited = new Set(this.adjSet.keys());
+        console.log(unvisited);
+        for (let i = 0; i < path.length - 1; i++) {
+            // check if the current node is not visited and if the current node has edge to the next node of path
+            if (!unvisited.has(path[i]) || !this.adjSet.get(path[i]).has(path[i + 1])) return false;
+            unvisited.delete(path[i]); // remove current (visited) node from the Set of unvisited nodes;
         }
-        return setOfNodes.size === 0;
+        // The path is passed and there are no unvisited nodes.
+        return unvisited.size === 0;
     }
 }
 
@@ -179,21 +182,7 @@ g.addEdge('Atlanta','Orlando');
 g.addEdge('Orlando','Detroit');
 
 
-// console.log(g.isConnected_BFS('Detroit', 'Philadelphia'));
-// console.log(g.isConnected_BFS('Philadelphia', 'Detroit'));
-// console.log(g.isConnected_BFS('Detroit', 'Los Angeles'));
-// console.log(g.isConnected_DFS('Detroit', 'New York'));
-// console.log(g.isConnected_DFS('Detroit', 'Boston'));
-// console.log(g.isConnected_DFS('Detroit', 'Los Angeles'));
-// g.removeEdge('New York','San Francisco');
-// console.log('---------');
-// g.printGraph();
-// g.printGraph();
-// console.log('-----------------------------');
-// g.removeNode('Boston');
-// g.printGraph();
-// console.log(g.minDistance('Detroit', 'Orlando'));
-console.log(g.isHamiltonianPath(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix',
-    'Houston','Atlanta','Orlando','Detroit']));
+console.log(g.isHamiltonianPath(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York',
+    'San Francisco','Phoenix','Houston','Atlanta','Orlando','Detroit']));
 
 
