@@ -1,30 +1,30 @@
 class Graph {
-    constructor(arr = []) {
-        this.adjSet = new Map();
-        arr.map(x => this.adjSet.set(x, new Set()));
+    constructor(arr = []){
+        this.vertices = new Map();
+        arr.map(x => this.vertices.set(x, new Set()));
     }
 
-    addNode(node) {
-        if (this.adjSet.has(node)) {
+    addVertex(vertex){
+        if (this.vertices.has(vertex)) {
             return false;
         }
-        this.adjSet.set(node, new Set);
+        this.vertices.set(vertex, new Set);
         return true;
     }
 
     // undirected graph
-    addEdge(src, dest) {
-        if (this.adjSet.get(src).has(dest)) {
+    addEdge(src, dest){
+        if (this.vertices.get(src).has(dest)) {
             return false;
         }
-        this.adjSet.get(src).add(dest);
-        this.adjSet.get(dest).add(src);
+        this.vertices.get(src).add(dest);
+        this.vertices.get(dest).add(src);
         return true;
     }
 
-    printGraph() {
+    printGraph(){
         let ans = '';
-        this.adjSet.forEach((value, key) => {
+        this.vertices.forEach((value, key) => {
             let str = key + ' -> |';
             value.forEach(value => {
                 str += ' * ' + value;
@@ -32,6 +32,28 @@ class Graph {
             ans += str + ' * |\n';
         });
         return ans;
+    }
+
+    DFS(){
+        const white = new Set(this.vertices.keys());
+        const grey = new Set();
+        const black = new Set();
+        const dfsVisit = (v) => {
+            white.delete(v);
+            grey.add(v);
+            this.vertices.get(v).forEach(dest => {
+                if (white.has(dest)) {
+                    dfsVisit(dest);
+                }
+            });
+            grey.delete(v);
+            black.add(v);
+        };
+        this.vertices.forEach((value, key) => {
+            if (white.has(key)) {
+                dfsVisit(key);
+            }
+        });
     }
 }
 const g = new Graph(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix',
@@ -47,6 +69,12 @@ g.addEdge('San Francisco','Phoenix');
 g.addEdge('Phoenix','Houston');
 g.addEdge('Houston','Atlanta');
 g.addEdge('Atlanta','Orlando');
-g.addEdge('Orlando','Detroit');
+g.addEdge('Detroit','Boston');
+g.addEdge('San Diego','San Francisco');
+g.addEdge('Philadelphia','San Diego');
+g.addEdge('Houston','Orlando');
+g.addEdge('Houston','New York');
+
 
 console.log(g.printGraph());
+g.DFS();
