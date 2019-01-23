@@ -1,3 +1,6 @@
+// Applications of DFS:
+// - get connected component for each vertex;
+
 class Graph {
     constructor(arr = []){
         this.vertices = new Map();
@@ -25,7 +28,7 @@ class Graph {
     printGraph(){
         let ans = '';
         this.vertices.forEach((value, key) => {
-            let str = key + ' -> |';
+            let str = key + ' '.repeat(15 - key.length) + ' -> |';
             value.forEach(value => {
                 str += ' * ' + value;
             });
@@ -41,9 +44,9 @@ class Graph {
         const dfsVisit = (v) => {
             white.delete(v);
             grey.add(v);
-            this.vertices.get(v).forEach(dest => {
-                if (white.has(dest)) {
-                    dfsVisit(dest);
+            this.vertices.get(v).forEach(neighbor => {
+                if (white.has(neighbor)) {
+                    dfsVisit(neighbor);
                 }
             });
             grey.delete(v);
@@ -54,6 +57,35 @@ class Graph {
                 dfsVisit(key);
             }
         });
+        return black;
+    }
+    DFS_components(){
+        const components = {};
+        const white = new Set(this.vertices.keys());
+        const grey = new Set();
+        const black = new Set();
+        const dfsVisit = (v) => {
+            white.delete(v);
+            grey.add(v);
+            this.vertices.get(v).forEach(neighbor => {
+                if (white.has(neighbor)) {
+                    dfsVisit(neighbor);
+                }
+            });
+            grey.delete(v);
+            black.add(v);
+            return black;
+        };
+        this.vertices.forEach((value, key) => {
+            if (white.has(key)) {
+                // each time we call dfsVisit we discover a new connected component
+                const component = dfsVisit(key);
+                components[key] = new Set(component.values());
+                grey.clear();
+                black.clear();
+            }
+        });
+        return components;
     }
 }
 const g = new Graph(['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix',
@@ -65,7 +97,7 @@ g.addEdge('Philadelphia','Boston');
 g.addEdge('Boston','San Diego');
 g.addEdge('San Diego','New York');
 g.addEdge('New York','San Francisco');
-g.addEdge('San Francisco','Phoenix');
+// g.addEdge('San Francisco','Phoenix');
 g.addEdge('Phoenix','Houston');
 g.addEdge('Houston','Atlanta');
 g.addEdge('Atlanta','Orlando');
@@ -73,8 +105,10 @@ g.addEdge('Detroit','Boston');
 g.addEdge('San Diego','San Francisco');
 g.addEdge('Philadelphia','San Diego');
 g.addEdge('Houston','Orlando');
-g.addEdge('Houston','New York');
+// g.addEdge('Houston','New York');
 
 
 console.log(g.printGraph());
-g.DFS();
+myset = g.DFS();
+console.log(myset.size);
+g.DFS_components();
