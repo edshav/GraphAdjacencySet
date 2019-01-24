@@ -3,31 +3,31 @@
 
 class Graph {
     constructor(arr = []){
-        this.vertices = new Map();
-        arr.map(x => this.vertices.set(x, new Set()));
+        this._vertices = new Map();
+        arr.map(x => this._vertices.set(x, new Set()));
     }
 
     addVertex(vertex){
-        if (this.vertices.has(vertex)) {
+        if (this._vertices.has(vertex)) {
             return false;
         }
-        this.vertices.set(vertex, new Set);
+        this._vertices.set(vertex, new Set);
         return true;
     }
 
     // undirected graph
     addEdge(src, dest){
-        if (this.vertices.get(src).has(dest)) {
+        if (this._vertices.get(src).has(dest)) {
             return false;
         }
-        this.vertices.get(src).add(dest);
-        this.vertices.get(dest).add(src);
+        this._vertices.get(src).add(dest);
+        this._vertices.get(dest).add(src);
         return true;
     }
 
     printGraph(){
         let ans = '';
-        this.vertices.forEach((value, key) => {
+        this._vertices.forEach((value, key) => {
             let str = key + ' '.repeat(15 - key.length) + ' -> |';
             value.forEach(value => {
                 str += ' * ' + value;
@@ -38,13 +38,13 @@ class Graph {
     }
 
     DFS(){
-        const white = new Set(this.vertices.keys());
+        const white = new Set(this._vertices.keys());
         const grey = new Set();
         const black = new Set();
         const dfsVisit = (v) => {
             white.delete(v);
             grey.add(v);
-            this.vertices.get(v).forEach(neighbor => {
+            this._vertices.get(v).forEach(neighbor => {
                 if (white.has(neighbor)) {
                     dfsVisit(neighbor);
                 }
@@ -52,7 +52,7 @@ class Graph {
             grey.delete(v);
             black.add(v);
         };
-        this.vertices.forEach((value, key) => {
+        this._vertices.forEach((value, key) => {
             if (white.has(key)) {
                 dfsVisit(key);
             }
@@ -62,13 +62,13 @@ class Graph {
 
     DFS_components(){
         const components = {};
-        const white = new Set(this.vertices.keys());
+        const white = new Set(this._vertices.keys());
         const grey = new Set();
         const black = new Set();
         const dfsVisit = (v) => {
             white.delete(v);
             grey.add(v);
-            this.vertices.get(v).forEach(neighbor => {
+            this._vertices.get(v).forEach(neighbor => {
                 if (white.has(neighbor)) {
                     dfsVisit(neighbor);
                 }
@@ -77,7 +77,7 @@ class Graph {
             black.add(v);
             return black;
         };
-        this.vertices.forEach((value, key) => {
+        this._vertices.forEach((value, key) => {
             if (white.has(key)) {
                 // each time we call dfsVisit we discover a new connected component
                 const component = dfsVisit(key);
@@ -96,7 +96,7 @@ class Graph {
         const dfsVisit = (v, parent = null) => {
             if (!answer) return;
             marked.add(v);
-            this.vertices.get(v).forEach(neighbor => {
+            this._vertices.get(v).forEach(neighbor => {
                 if (marked.has(neighbor) && neighbor !== parent) {
                     answer = false;
                 }
@@ -106,7 +106,7 @@ class Graph {
             });
             marked.delete(v);
         };
-        this.vertices.forEach((value, key) => {
+        this._vertices.forEach((value, key) => {
             if (!marked.has(key)) {
                 dfsVisit(key);
             }
