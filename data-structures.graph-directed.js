@@ -68,7 +68,7 @@ class Graph {
 
 
     dfs() {
-        const explorer = (vertex) => {
+        const explorer = vertex => {
             this._vertices[vertex].color = `grey`;
             for (const neighbor in this._vertices[vertex].edges) {
                 if (this._vertices[neighbor].color === `white`) {
@@ -88,27 +88,26 @@ class Graph {
     }
 
 
-    // strongly connected components in the directed graph
+    // strongly connected components
     scc() {
         const list = [];
-        const explorer = (vertex) => {
+        const explorer = vertex => {
             this._vertices[vertex].color = `grey`;
             for (const neighbor in this._vertices[vertex].edges) {
                 if (this._vertices[neighbor].color === `white`) {
                     explorer(neighbor);
-                } else if (this._vertices[neighbor].color === `grey`) {
-                    list.unshift(neighbor);
-                    this._vertices[neighbor].color = `black`
                 }
             }
+            this._vertices[vertex].color = `black`;
+            list.unshift(vertex);
         };
 
         const getTranspose = () => {
             const newGraph = new Graph();
             for (const vertex in this._vertices) {
                 newGraph.addVertex(vertex);
+                newGraph._vertices[vertex].assigned = false;
                 for (const dest in this._vertices[vertex].edges) {
-                    // console.log(dest);
                     newGraph.addVertex(dest);
                     newGraph.addEdge(dest, vertex);
                 }
@@ -116,37 +115,35 @@ class Graph {
             return newGraph;
         };
 
+        const assign = (node, graph, SCC) => {
+            this._vertices[node].scc = SCC;
+            graph._vertices[node].assigned = true;
+            for (const neighbor in graph._vertices[node].edges) {
+                if (graph._vertices[neighbor].assigned === false) {
+                    assign(neighbor, graph, SCC);
+                }
+            }
+        };
+
         for (const vertex in this._vertices) {
             if (this._vertices[vertex].color === `white`) {
-                explorer(vertex)
-            } else if (this._vertices[vertex].color === `grey`) {
-                list.unshift(vertex);
-                this._vertices[vertex].color = `black`
+                explorer(vertex);
             }
         }
-        for (const vertex in this._vertices) {
-            this._vertices[vertex].color = `white`;
-        }
-        console.log(list);
         const transposeGraph = getTranspose();
-        
+        let SCC = 0;
+        while (list.length) {
+            const element = list.shift();
+            if (transposeGraph._vertices[element].assigned === false) {
+                SCC++;
+                assign(element, transposeGraph, SCC);
+            }
+        }
+        return SCC;
     }
 
 }
 
-// const g = new Graph();
-// const vert = ['Detroit','Chicago','Philadelphia','Boston','San Diego','New York','San Francisco','Phoenix','Houston',
-//     'Atlanta','Orlando'];
-// vert.map(x => g.addVertex(x));
-// const edges = [['Detroit','Chicago'],['Chicago','Philadelphia'],['Philadelphia','Boston'],['Boston','San Diego'],
-//     ['San Diego','New York'],['New York','San Francisco'],['San Francisco','Phoenix'],['Phoenix','Houston'],
-//     ['Houston','Atlanta'],['Atlanta','Orlando'],['Detroit','Boston'],['San Diego','San Francisco'],
-//     ['Philadelphia','San Diego'],['Houston','Orlando'],['Houston','New York']];
-// edges.map(y => g.addEdge(...y));
-// g.removeEdge('San Francisco','Phoenix');
-// g.removeEdge('San Francisco','Phoenix');
-// console.log(g.printGraph());
-// g.dfs();
 const gr = new Graph();
 
 for (let i = 1; i < 9; i++) {
@@ -154,5 +151,5 @@ for (let i = 1; i < 9; i++) {
 }
 const e = [[1,8],[8,6],[1,4],[6,7],[7,8],[6,1],[6,3],[7,3],[4,3],[5,3],[5,4],[4,2],[2,5]];
 e.map(x => gr.addEdge(...x));
+console.log(gr.scc());
 console.log(gr.printGraph());
-gr.scc();
