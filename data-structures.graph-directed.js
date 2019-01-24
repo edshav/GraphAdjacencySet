@@ -47,7 +47,7 @@ class Graph {
     }
 
     printGraph() {
-        let answer = '';
+        let answer = ``;
         for (const vertex in this._vertices) {
             answer += `${vertex} -> ` + ` `.repeat(21 - vertex.length) + `|`;
             for (const dest in this._vertices[vertex].edges) {
@@ -58,6 +58,25 @@ class Graph {
         return answer;
     }
 
+    dfs() {
+        const explorer = (vertex) => {
+            this._vertices[vertex].color = `grey`;
+            for (const neighbor in this._vertices[vertex].edges) {
+                if (this._vertices[neighbor].color === `white`) {
+                    explorer(neighbor);
+                }
+            }
+        };
+        for (const vertex in this._vertices) {
+            if (this._vertices[vertex].color === `white`) {
+                explorer(vertex)
+            }
+        }
+        // does it need?
+        for (const vertex in this._vertices) {
+            this._vertices[vertex].color = `white`;
+        }
+    }
 
 }
 
@@ -70,4 +89,7 @@ const edges = [['Detroit','Chicago'],['Chicago','Philadelphia'],['Philadelphia',
     ['Houston','Atlanta'],['Atlanta','Orlando'],['Detroit','Boston'],['San Diego','San Francisco'],
     ['Philadelphia','San Diego'],['Houston','Orlando'],['Houston','New York']];
 edges.map(y => g.addEdge(...y));
-console.log(g.printGraph());
+g.removeEdge('San Francisco','Phoenix');
+g.removeEdge('San Francisco','Phoenix');
+// console.log(g.printGraph());
+g.dfs();
