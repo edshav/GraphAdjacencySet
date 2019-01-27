@@ -1,5 +1,8 @@
 class Graph {
-    static hasOwn = Object.prototype.hasOwnProperty; // https://github.com/shichuan/javascript-patterns/blob/master/general-patterns/for-in-loops.html
+    // https://github.com/shichuan/javascript-patterns/blob/master/general-patterns/for-in-loops.html
+    static hasOwn(obj, prop) {
+        return Object.prototype.hasOwnProperty.call(obj, prop);
+}
 
     constructor() {
         this._vertices = {};
@@ -19,12 +22,12 @@ class Graph {
 
 
     hasVertex(value) {
-        return Graph.hasOwn.call(this._vertices, value);
+        return Graph.hasOwn(this._vertices, value);
     }
 
 
     hasEdge(src, dest) {
-        return this.hasVertex(src) && Graph.hasOwn.call(this._vertices[src].edges, dest);
+        return this.hasVertex(src) && Graph.hasOwn(this._vertices[src].edges, dest);
     }
 
 
@@ -41,7 +44,7 @@ class Graph {
     removeVertex(value) {
         if (!this.hasVertex(value)) return false;
         for (const vertex in this._vertices) {
-            if (Graph.hasOwn.call(this._vertices, vertex)) {
+            if (Graph.hasOwn(this._vertices, vertex)) {
                 this.removeEdge(vertex, value);
             }
         }
@@ -61,10 +64,10 @@ class Graph {
     printGraph() {
         let answer = ``;
         for (const vertex in this._vertices) {
-            if (Graph.hasOwn.call(this._vertices, vertex)) {
+            if (Graph.hasOwn(this._vertices, vertex)) {
                 answer += `${vertex} -> ` + ` `.repeat(21 - vertex.length) + `|`;
                 for (const dest in this._vertices[vertex].edges) {
-                    if (Graph.hasOwn.call(this._vertices[vertex].edges, dest)) {
+                    if (Graph.hasOwn(this._vertices[vertex].edges, dest)) {
                         answer += ` * ${dest}`;
                     }
                 }
@@ -79,19 +82,19 @@ class Graph {
         const explorer = vertex => {
             this._vertices[vertex].color = `grey`;
             for (const neighbor in this._vertices[vertex].edges) {
-                if (Graph.hasOwn.call(this._vertices[vertex].edges, neighbor) && this._vertices[neighbor].color === `white`) {
+                if (Graph.hasOwn(this._vertices[vertex].edges, neighbor) && this._vertices[neighbor].color === `white`) {
                     explorer(neighbor);
                 }
             }
         };
         for (const vertex in this._vertices) {
-            if (Graph.hasOwn.call(this._vertices, vertex) && this._vertices[vertex].color === `white`) {
+            if (Graph.hasOwn(this._vertices, vertex) && this._vertices[vertex].color === `white`) {
                 explorer(vertex)
             }
         }
         // does it need?
         for (const vertex in this._vertices) {
-            if (Graph.hasOwn.call(this._vertices, vertex)) {
+            if (Graph.hasOwn(this._vertices, vertex)) {
                 this._vertices[vertex].color = `white`;
             }
         }
@@ -104,7 +107,7 @@ class Graph {
         const explorer = vertex => {
             this._vertices[vertex].color = `grey`;
             for (const neighbor in this._vertices[vertex].edges) {
-                if (Graph.hasOwn.call(this._vertices[vertex].edges, neighbor) && this._vertices[neighbor].color === `white`) {
+                if (Graph.hasOwn(this._vertices[vertex].edges, neighbor) && this._vertices[neighbor].color === `white`) {
                     explorer(neighbor);
                 }
             }
@@ -115,11 +118,11 @@ class Graph {
         const getTranspose = () => {
             const newGraph = new Graph();
             for (const vertex in this._vertices) {
-                if (Graph.hasOwn.call(this._vertices, vertex)) {
+                if (Graph.hasOwn(this._vertices, vertex)) {
                     newGraph.addVertex(vertex);
                     newGraph._vertices[vertex].assigned = false;
                     for (const dest in this._vertices[vertex].edges) {
-                        if (Graph.hasOwn.call(this._vertices[vertex].edges, dest)) {
+                        if (Graph.hasOwn(this._vertices[vertex].edges, dest)) {
                             newGraph.addVertex(dest);
                             newGraph.addEdge(dest, vertex);
                         }
@@ -133,14 +136,14 @@ class Graph {
             this._vertices[node].scc = SCC;
             graph._vertices[node].assigned = true;
             for (const neighbor in graph._vertices[node].edges) {
-                if (Graph.hasOwn.call(graph._vertices[node].edges, neighbor) && graph._vertices[neighbor].assigned === false) {
+                if (Graph.hasOwn(graph._vertices[node].edges, neighbor) && graph._vertices[neighbor].assigned === false) {
                     assign(neighbor, graph, SCC);
                 }
             }
         };
 
         for (const vertex in this._vertices) {
-            if (Graph.hasOwn.call(this._vertices, vertex) && this._vertices[vertex].color === `white`) {
+            if (Graph.hasOwn(this._vertices, vertex) && this._vertices[vertex].color === `white`) {
                 explorer(vertex);
             }
         }
